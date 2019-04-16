@@ -29,7 +29,8 @@ function makeid(length) {
 
 module.exports = function (app) {
     app.ws('/', function (ws, req) {
-        var fileName = uuid.v1();
+        // var fileName = uuid.v1();
+        var fileName = "testm";
         console.log('new connection established');
         ws.on('message', function(data) {
             if (data instanceof Buffer) {

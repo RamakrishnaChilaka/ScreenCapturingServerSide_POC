@@ -1,6 +1,7 @@
 (function () {
     var recorder;
     var mediaStream;
+    var audioStream;
     var fileName;
     var connection;
 
@@ -9,7 +10,6 @@
         var userstream;
         return navigator.mediaDevices.getDisplayMedia({
             video: true,
-            audio: true
         })
         // .then(function (stream) {
         //     mediaStream = stream;
@@ -18,9 +18,17 @@
         // })
     };
 
+    function getAudioStream() {
+        return navigator.mediaDevices.getUserMedia({
+            audio: true,
+        });
+    }
+
     function getRecorder() {
-        var options = { mimeType: 'video/webm', audioBitsPerSecond: 128000 };
-        recorder = new MediaRecorder(mediaStream, options);
+        // var options = { mimeType: 'video/webm', audioBitsPerSecond: 128000 };
+        var options = {mimeType: 'video/webm;codecs=vp9'};
+        var combinedStream = new MediaStream([mediaStream.getTracks()[0], audioStream.getTracks()[0]]);
+        recorder = new MediaRecorder(combinedStream, options);
         recorder.ondataavailable = videoDataHandler;
     };
 
@@ -51,6 +59,7 @@
     var startButton = document.getElementById('record');
     startButton.addEventListener('click', async function (e) {
         mediaStream = await getVideoStream();
+        audioStream = await getAudioStream();
         getRecorder();
         recorder.start(5000);
     });
@@ -59,6 +68,13 @@
     stopButton.addEventListener('click', function (e) {
         recorder.stop();
         updateVideoFile();
+        const Http = new XMLHttpRequest();
+        const url='http://localhost:7001/stop';
+        Http.open("GET", url);
+        Http.send();
+        Http.onreadystatechange=(e)=>{
+            console.log(Http.responseText)
+        }
     });
 
     getWebSocket();

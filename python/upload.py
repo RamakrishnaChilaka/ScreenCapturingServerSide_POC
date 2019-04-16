@@ -2,9 +2,10 @@ import logging
 import boto3
 from botocore.exceptions import ClientError
 from pymongo import MongoClient
+import os
 
-ACCESS_KEY = "AKIA6L75RGRQHV5PPDE5"
-SECRET_KEY = "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"
+ACCESS_KEY = "fsgdhf"
+SECRET_KEY = "asdfgdf"
 
 
 def upload_file(file_name, bucket, object_name=None):
@@ -57,7 +58,7 @@ def main():
 
     bucket_name = 'abhinav-test-nfer'
     file_name = '../node/uploads/testm.webm'
-    object_name = 'abhinav.mp4'
+    object_name = 'abhinav.webm'
 
     logging.basicConfig(level=logging.DEBUG,
                         format='%(levelname)s: %(asctime)s: %(message)s')
@@ -70,6 +71,8 @@ def main():
     # 1) need userId
     # 2) make this recursive until upload succeeds
     # 3) clean up the video
+    os.remove(file_name) 
+    print("File Removed!")
     
 
 
